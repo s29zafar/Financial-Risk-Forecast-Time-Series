@@ -1,6 +1,6 @@
 # Financial-Risk-Forecast-Time-Series
-Apply the Value At Risk model to forecast the lower 15% quantile 10 steps ahead for 40 different stocks. I am only showing the forecasts for the first and last data sets. 
-After importing the data we see that this is the time series.
+Apply the Value At Risk model to forecast the lower 15% quantile 10 steps ahead for 40 different stocks. I am only showing the forecasts for the first and last datasets. 
+After importing the log-differenced price data, we see that this is the time series.
 
 We plot stock 1:
 ![image](https://github.com/user-attachments/assets/b0b21b48-e2d1-4920-ba94-85891f36ef16)
