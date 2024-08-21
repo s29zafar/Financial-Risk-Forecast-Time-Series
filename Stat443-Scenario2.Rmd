@@ -1,0 +1,214 @@
+---
+title: "Stat443-Scenario2"
+author: "Saim Zafar"
+date: "2024-08-06"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Import Libraries
+library(fGarch)
+library(PerformanceAnalytics)
+library(astsa)
+library(forecast)
+library(ggplot2)
+library(gridExtra)
+library(rugarch)
+```
+
+### Scenario 2 - Financial Risk Forecast
+
+We first import all the stock data.
+```{r}
+stock1 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock1.txt", header = TRUE))
+stock2 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock2.txt", header = TRUE))
+stock3 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock3.txt", header = TRUE))
+stock4 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock4.txt", header = TRUE))
+stock5 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock5.txt", header = TRUE))
+stock6 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock6.txt", header = TRUE))
+stock7 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock7.txt", header = TRUE))
+stock8 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock8.txt", header = TRUE))
+stock9 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock9.txt", header = TRUE))
+stock10 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock10.txt", header = TRUE))
+stock11 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock11.txt", header = TRUE))
+stock12 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock12.txt", header = TRUE))
+stock13 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock13.txt", header = TRUE))
+stock14 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock14.txt", header = TRUE))
+stock15 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock15.txt", header = TRUE))
+stock16 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock16.txt", header = TRUE))
+stock17 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock17.txt", header = TRUE))
+stock18 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock18.txt", header = TRUE))
+stock19 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock19.txt", header = TRUE))
+stock20 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock20.txt", header = TRUE))
+stock21 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock21.txt", header = TRUE))
+stock22 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock22.txt", header = TRUE))
+stock23 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock23.txt", header = TRUE))
+stock24 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock24.txt", header = TRUE))
+stock25 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock25.txt", header = TRUE))
+stock26 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock26.txt", header = TRUE))
+stock27 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock27.txt", header = TRUE))
+stock28 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock28.txt", header = TRUE))
+stock29 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock29.txt", header = TRUE))
+stock30 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock30.txt", header = TRUE))
+stock31 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock31.txt", header = TRUE))
+stock32 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock32.txt", header = TRUE))
+stock33 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock33.txt", header = TRUE))
+stock34 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock34.txt", header = TRUE))
+stock35 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock35.txt", header = TRUE))
+stock36 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock36.txt", header = TRUE))
+stock37 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock37.txt", header = TRUE))
+stock38 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock38.txt", header = TRUE))
+stock39 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock39.txt", header = TRUE))
+stock40 <- ts(read.table(file = "~/Desktop/Stat 443/Final Report/STAT 443 - Spring 2024 Data/stock40.txt", header = TRUE))
+```
+
+```{r}
+plot(stock1)
+plot(stock40)
+```
+
+We now find the Value at Risk forecast for the 15% lower 1-step forecast for the stock models:
+```{r}
+VaR_1_1 <- PerformanceAnalytics::VaR(stock1, p_loss = 0.15, method = "historical")
+VaR_1_2 <- PerformanceAnalytics::VaR(stock2, p_loss = 0.15, method = "historical")
+VaR_1_3 <- PerformanceAnalytics::VaR(stock3, p_loss = 0.15, method = "historical")
+VaR_1_4 <- PerformanceAnalytics::VaR(stock4, p_loss = 0.15, method = "historical")
+VaR_1_5 <- PerformanceAnalytics::VaR(stock5, p_loss = 0.15, method = "historical")
+VaR_1_6 <- PerformanceAnalytics::VaR(stock6, p_loss = 0.15, method = "historical")
+VaR_1_7 <- PerformanceAnalytics::VaR(stock7, p_loss = 0.15, method = "historical")
+VaR_1_8 <- PerformanceAnalytics::VaR(stock8, p_loss = 0.15, method = "historical")
+VaR_1_9 <- PerformanceAnalytics::VaR(stock9, p_loss = 0.15, method = "historical")
+VaR_1_10 <- PerformanceAnalytics::VaR(stock10, p_loss = 0.15, method = "historical")
+VaR_1_11 <- PerformanceAnalytics::VaR(stock11, p_loss = 0.15, method = "historical")
+VaR_1_12 <- PerformanceAnalytics::VaR(stock12, p_loss = 0.15, method = "historical")
+VaR_1_13 <- PerformanceAnalytics::VaR(stock13, p_loss = 0.15, method = "historical")
+VaR_1_14 <- PerformanceAnalytics::VaR(stock14, p_loss = 0.15, method = "historical")
+VaR_1_15 <- PerformanceAnalytics::VaR(stock15, p_loss = 0.15, method = "historical")
+VaR_1_16 <- PerformanceAnalytics::VaR(stock16, p_loss = 0.15, method = "historical")
+VaR_1_17 <- PerformanceAnalytics::VaR(stock17, p_loss = 0.15, method = "historical")
+VaR_1_18 <- PerformanceAnalytics::VaR(stock18, p_loss = 0.15, method = "historical")
+VaR_1_19 <- PerformanceAnalytics::VaR(stock19, p_loss = 0.15, method = "historical")
+VaR_1_20 <- PerformanceAnalytics::VaR(stock20, p_loss = 0.15, method = "historical")
+VaR_1_21 <- PerformanceAnalytics::VaR(stock21, p_loss = 0.15, method = "historical")
+VaR_1_22 <- PerformanceAnalytics::VaR(stock22, p_loss = 0.15, method = "historical")
+VaR_1_23 <- PerformanceAnalytics::VaR(stock23, p_loss = 0.15, method = "historical")
+VaR_1_24 <- PerformanceAnalytics::VaR(stock24, p_loss = 0.15, method = "historical")
+VaR_1_25 <- PerformanceAnalytics::VaR(stock25, p_loss = 0.15, method = "historical")
+VaR_1_26 <- PerformanceAnalytics::VaR(stock26, p_loss = 0.15, method = "historical")
+VaR_1_27 <- PerformanceAnalytics::VaR(stock27, p_loss = 0.15, method = "historical")
+VaR_1_28 <- PerformanceAnalytics::VaR(stock28, p_loss = 0.15, method = "historical")
+VaR_1_29 <- PerformanceAnalytics::VaR(stock29, p_loss = 0.15, method = "historical")
+VaR_1_30 <- PerformanceAnalytics::VaR(stock30, p_loss = 0.15, method = "historical")
+VaR_1_31 <- PerformanceAnalytics::VaR(stock31, p_loss = 0.15, method = "historical")
+VaR_1_32 <- PerformanceAnalytics::VaR(stock32, p_loss = 0.15, method = "historical")
+VaR_1_33 <- PerformanceAnalytics::VaR(stock33, p_loss = 0.15, method = "historical")
+VaR_1_34 <- PerformanceAnalytics::VaR(stock34, p_loss = 0.15, method = "historical")
+VaR_1_35 <- PerformanceAnalytics::VaR(stock35, p_loss = 0.15, method = "historical")
+VaR_1_36 <- PerformanceAnalytics::VaR(stock36, p_loss = 0.15, method = "historical")
+VaR_1_37 <- PerformanceAnalytics::VaR(stock37, p_loss = 0.15, method = "historical")
+VaR_1_38 <- PerformanceAnalytics::VaR(stock38, p_loss = 0.15, method = "historical")
+VaR_1_39 <- PerformanceAnalytics::VaR(stock39, p_loss = 0.15, method = "historical")
+VaR_1_40 <- PerformanceAnalytics::VaR(stock40, p_loss = 0.15, method = "historical")
+```
+
+The forecast method that calculates the n step ahead forecast of Value at Risk.
+```{r}
+VaR_n_stepahead <- function(n, VaR_1step){
+  typeof(VaR_1step)
+  VaR_Forcast <- rep(NA, n)
+  for (i in 1:n){
+    VaR_Forcast[i] <- sqrt(i)*VaR_1step
+  }
+  return (VaR_Forcast)
+} 
+```
+The n-step ahead forecasts for all these values.
+
+```{r}
+VaR_forcast_1 <- VaR_n_stepahead(10, VaR_1_1[1])
+VaR_forcast_2 <- VaR_n_stepahead(10, VaR_1_2[1])
+VaR_forcast_3 <- VaR_n_stepahead(10, VaR_1_3[1])
+VaR_forcast_4 <- VaR_n_stepahead(10, VaR_1_4[1])
+VaR_forcast_5 <- VaR_n_stepahead(10, VaR_1_5[1])
+VaR_forcast_6 <- VaR_n_stepahead(10, VaR_1_6[1])
+VaR_forcast_7 <- VaR_n_stepahead(10, VaR_1_7[1])
+VaR_forcast_8 <- VaR_n_stepahead(10, VaR_1_8[1])
+VaR_forcast_9 <- VaR_n_stepahead(10, VaR_1_9[1])
+VaR_forcast_10 <- VaR_n_stepahead(10, VaR_1_10[1])
+VaR_forcast_11 <- VaR_n_stepahead(10, VaR_1_11[1])
+VaR_forcast_12 <- VaR_n_stepahead(10, VaR_1_12[1])
+VaR_forcast_13 <- VaR_n_stepahead(10, VaR_1_13[1])
+VaR_forcast_14 <- VaR_n_stepahead(10, VaR_1_14[1])
+VaR_forcast_15 <- VaR_n_stepahead(10, VaR_1_15[1])
+VaR_forcast_16 <- VaR_n_stepahead(10, VaR_1_16[1])
+VaR_forcast_17 <- VaR_n_stepahead(10, VaR_1_17[1])
+VaR_forcast_18 <- VaR_n_stepahead(10, VaR_1_18[1])
+VaR_forcast_19 <- VaR_n_stepahead(10, VaR_1_19[1])
+VaR_forcast_20 <- VaR_n_stepahead(10, VaR_1_20[1])
+VaR_forcast_21 <- VaR_n_stepahead(10, VaR_1_21[1])
+VaR_forcast_22 <- VaR_n_stepahead(10, VaR_1_22[1])
+VaR_forcast_23 <- VaR_n_stepahead(10, VaR_1_23[1])
+VaR_forcast_24 <- VaR_n_stepahead(10, VaR_1_24[1])
+VaR_forcast_25 <- VaR_n_stepahead(10, VaR_1_25[1])
+VaR_forcast_26 <- VaR_n_stepahead(10, VaR_1_26[1])
+VaR_forcast_27 <- VaR_n_stepahead(10, VaR_1_27[1])
+VaR_forcast_28 <- VaR_n_stepahead(10, VaR_1_28[1])
+VaR_forcast_29 <- VaR_n_stepahead(10, VaR_1_29[1])
+VaR_forcast_30 <- VaR_n_stepahead(10, VaR_1_30[1])
+VaR_forcast_31 <- VaR_n_stepahead(10, VaR_1_31[1])
+VaR_forcast_32 <- VaR_n_stepahead(10, VaR_1_32[1])
+VaR_forcast_33 <- VaR_n_stepahead(10, VaR_1_33[1])
+VaR_forcast_34 <- VaR_n_stepahead(10, VaR_1_34[1])
+VaR_forcast_35 <- VaR_n_stepahead(10, VaR_1_35[1])
+VaR_forcast_36 <- VaR_n_stepahead(10, VaR_1_36[1])
+VaR_forcast_37 <- VaR_n_stepahead(10, VaR_1_37[1])
+VaR_forcast_38 <- VaR_n_stepahead(10, VaR_1_38[1])
+VaR_forcast_39 <- VaR_n_stepahead(10, VaR_1_39[1])
+VaR_forcast_40 <- VaR_n_stepahead(10, VaR_1_40[1])
+```
+
+
+Plots for the two stocks say stock 1 and stock 40.
+```{r}
+#, fig.width=10,fig.height=5}
+
+ggplot(mapping=aes(x=1:150)) +
+  geom_line(aes(y=as.numeric(stock1)),col='gray') +
+  geom_line(aes(x=150+1:10,y=c(VaR_forcast_1), col='Forcast lower 15% quantile of VaR for 10 steps ahead')) +
+  xlab("Time") + ylab("Price of Stock 1")
+
+
+ggplot(mapping=aes(x=1:150)) +
+  geom_line(aes(y=as.numeric(stock40)),col='gray') +
+  geom_line(aes(x=150+1:10,y=c(VaR_forcast_40), col='Forcast lower 15% quantile of VaR for 10 steps ahead')) +
+  xlab("Time") + ylab("Price of Stock 40")
+
+```
+
+```{r, include=FALSE}
+last.name = "Zafar"
+student.id = 20888160
+
+combinedforcast <- c(VaR_forcast_1,VaR_forcast_2,VaR_forcast_3,VaR_forcast_4,VaR_forcast_5,
+                     VaR_forcast_6,VaR_forcast_7,VaR_forcast_8,VaR_forcast_9,VaR_forcast_10,
+                     VaR_forcast_11,VaR_forcast_12,VaR_forcast_13,VaR_forcast_14,VaR_forcast_15,
+                     VaR_forcast_16,VaR_forcast_17,VaR_forcast_18,VaR_forcast_19,VaR_forcast_20,
+                     VaR_forcast_21,VaR_forcast_22,VaR_forcast_23,VaR_forcast_24,VaR_forcast_25,
+                     VaR_forcast_26,VaR_forcast_27,VaR_forcast_28,VaR_forcast_29,VaR_forcast_30,
+                     VaR_forcast_31,VaR_forcast_32,VaR_forcast_33,VaR_forcast_34,VaR_forcast_35,
+                     VaR_forcast_36,VaR_forcast_37,VaR_forcast_38,VaR_forcast_39,VaR_forcast_40)
+###
+# Scenario 2 
+###
+forecast2 <- matrix(combinedforcast,10,40) # Forecasts for stock 1-40 should be stored in the columns of a 10x40 dimensional matrix
+
+write.table(forecast2, file = paste("Scenario2_",last.name,student.id,".txt", sep = ""), sep ="," , col.names = F, row.names = F )
+```
+
+
+
+
+
+
+
